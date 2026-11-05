@@ -8,7 +8,7 @@ window.SALON_CONFIG = {
   currency: "Rs",
   openHour: 10, closeHour: 19,          // last slot starts at 7pm
   closedDays: [0],                      // 0 = Sunday
-  SUPABASE_URL: "YOUR_SUPABASE_URL",
-  SUPABASE_ANON_KEY: "YOUR_SUPABASE_ANON_KEY",
+  SUPABASE_URL: "https://jamimfkovjmwmesftjbx.supabase.co/rest/v1/",
+  SUPABASE_ANON_KEY: "sb_publishable_xXpb4quC_an_9ZR8rlx_dg_lQ8dm2_P",
   demoAdminPassword: "bloom123"         // demo mode only
 };
