@@ -36,7 +36,7 @@ function activity() {
 const eff = s => s.sale_price && +s.sale_price < +s.price ? +s.sale_price : +s.price;
 const money = n => `${C.currency} ${Number(n).toLocaleString()}`;
 const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
- 
+
 const API = {
   async services(all) {
     if (live) { let q = sb.from("services").select("*").order("id"); if (!all) q = q.eq("active", true); const {data} = await q; return data || []; }
@@ -82,7 +82,7 @@ const API = {
   async isAdmin() { if (live) { const {data} = await sb.auth.getSession(); return !!data.session; } return sessionStorage.getItem("adm") === "1"; },
   async logout() { if (live) await sb.auth.signOut(); sessionStorage.removeItem("adm"); }
 };
- 
+
 async function uploadImage(file) {
   const blob = await new Promise(res => { const im = new Image(); im.onload = () => { const k = Math.min(1, 900 / im.width), c = document.createElement("canvas"); c.width = im.width * k; c.height = im.height * k; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); c.toBlob(res, "image/jpeg", .78); }; im.src = URL.createObjectURL(file); });
   if (live) { const p = Date.now() + ".jpg"; const {error} = await sb.storage.from("service-images").upload(p, blob, {contentType: "image/jpeg"}); if (error) throw error; return sb.storage.from("service-images").getPublicUrl(p).data.publicUrl; }
@@ -101,8 +101,13 @@ function layout(active) {
   const links = [["index.html","Home"],["services.html","Services"],["book.html","Book"],["mybookings.html","My bookings"]];
   document.body.insertAdjacentHTML("afterbegin", `<header class="nav"><a class="logo" href="index.html">${esc(C.name)}</a>
     <nav>${links.map(l => `<a href="${l[0]}" class="${l[0] === active ? "on" : ""}">${l[1]}</a>`).join("")}<a class="btn sm" href="book.html">Book now</a></nav></header>`);
-  document.body.insertAdjacentHTML("beforeend", `<footer><div><b>${esc(C.name)}</b><p>${esc(C.tagline)}</p></div>
-    <div><p>${esc(C.address)}</p><p>${esc(C.phone)} · ${esc(C.hours)}</p></div><div><a href="admin.html">Owner login</a></div></footer>`);
+  document.body.insertAdjacentHTML("beforeend", `<footer><div class="fgrid">
+    <div class="fbrand"><b>${esc(C.name)}</b><p>${esc(C.about)}</p>
+      <div class="soc"><a href="${esc(C.instagram)}" target="_blank" rel="noopener">Instagram</a><a href="${esc(C.facebook)}" target="_blank" rel="noopener">Facebook</a><a href="${esc(C.tiktok)}" target="_blank" rel="noopener">TikTok</a></div></div>
+    <div><h4>Explore</h4><a href="index.html">Home</a><a href="services.html">Services &amp; prices</a><a href="book.html">Book online</a><a href="mybookings.html">My bookings</a></div>
+    <div><h4>Opening hours</h4>${C.hoursList.map(h => `<p class="hr"><span>${esc(h[0])}</span><span>${esc(h[1])}</span></p>`).join("")}</div>
+    <div><h4>Visit us</h4><p>${esc(C.address)}</p><p><a href="tel:${esc(C.phone.replace(/\s/g, ""))}">${esc(C.phone)}</a></p><p><a href="mailto:${esc(C.email)}">${esc(C.email)}</a></p>
+      <p><a class="btn sm" href="https://wa.me/${esc(C.whatsapp)}" target="_blank" rel="noopener">Chat on WhatsApp</a></p></div></div>
+    <div class="fbar"><span>© ${new Date().getFullYear()} ${esc(C.name)}. All rights reserved.</span><span>Free parking · Card &amp; cash accepted · Walk-ins welcome</span><a href="admin.html">Owner login</a></div></footer>`);
   if (!live) activity();
 }
- 
