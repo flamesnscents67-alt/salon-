@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"><title>My Bookings — Blush &amp; Bloom</title><meta name="description" content="Look up and manage your salon appointments."></head><body>
+<section><div class="page" style="max-width:720px"><h1>My bookings</h1><p class="note">Enter the email and phone number you booked with.</p>
+<div class="panel"><label for="e">Email</label><input id="e" type="email" autocomplete="email"><label for="p">Phone</label><input id="p" type="tel" autocomplete="tel">
+<p class="note" id="err" role="alert" style="color:#b3314f"></p><button class="btn" id="go">Show my bookings</button><p class="note" id="hint" hidden>Demo: try ayesha@example.com and +92 300 1234510</p></div>
+<div id="out"></div></div></section><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script><script src="js/config.js"></script><script src="js/app.js"></script>
+<script>layout("mybookings.html");const q=id=>document.getElementById(id);q("hint").hidden=live;
+async function load(){const e=q("e").value.trim(),p=q("p").value.trim();q("err").textContent="";
+ if(!e||!p)return q("err").textContent="Please enter both your email and phone number.";
+ const l=(await API.myBookings(e,p)).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));
+ q("out").innerHTML=l.length?l.map(function(b){return '<div class="panel"><h3>'+esc(b.date)+' at '+esc(String(b.time).slice(0,5))+'</h3><p>'+esc((b.services||[]).join(", "))+'</p><p><b>'+money(b.total)+'</b></p><button class="btn sm danger" data-c="'+b.id+'">Cancel booking</button></div>'}).join(""):'<div class="panel"><p>No bookings found for those details. Check the spelling and try again.</p></div>'}
+q("go").onclick=load;
+q("out").onclick=async function(ev){const b=ev.target.closest("[data-c]");if(!b||!confirm("Cancel this booking?"))return;await API.cancel(b.dataset.c,q("e").value.trim(),q("p").value.trim());load()};</script></body></html>
