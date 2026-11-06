@@ -45,7 +45,7 @@ table{width:100%;border-collapse:collapse;font-size:.95rem}th,td{text-align:left
 footer{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;padding:40px 5vw;background:var(--blush);color:var(--mut)}footer b{color:var(--rose);font:600 1.4rem "Fraunces",serif}footer p{margin:4px 0}
 @media(max-width:800px){.hero{grid-template-columns:1fr;min-height:0}.arch{max-width:340px;margin:0 auto}.two{grid-template-columns:1fr}nav a:not(.btn){display:none}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
-
+ 
 .stats{display:flex;gap:28px;flex-wrap:wrap;margin-top:34px}.stats div{font-size:.95rem;color:var(--mut)}.stats b{display:block;font:600 1.9rem "Fraunces",serif;color:var(--rose)}
 .offer{background:var(--rose);color:#fff;text-align:center;padding:12px 5vw;font-weight:700}.offer a{color:#fff}
 .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}.gal figure{margin:0;aspect-ratio:1;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,var(--blush),var(--lilac))}.gal img{width:100%;height:100%;object-fit:cover}
@@ -53,3 +53,13 @@ footer{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap
 .rev blockquote p{margin:8px 0 14px}.rev cite{font-style:normal;font-weight:700;color:var(--rose)}.star{color:#f4a62a;letter-spacing:2px}
 .toast{position:fixed;left:16px;bottom:16px;z-index:30;background:#fff;border:2px solid var(--rose);border-radius:18px;padding:12px 18px;box-shadow:0 10px 30px rgba(232,82,127,.25);transform:translateY(140%);transition:transform .4s;max-width:290px}
 .toast.on{transform:none}.toast small{display:block;color:var(--mut)}
+.thumb{width:56px;height:56px;object-fit:cover;border-radius:14px;background:var(--blush)}
+.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px}
+.cat{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:4/5;display:flex;align-items:flex-end;text-decoration:none;color:#fff;background:linear-gradient(135deg,var(--rose),var(--lilac))}
+.cat img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}.cat:hover img{transform:scale(1.05)}
+.cat div{position:relative;padding:60px 22px 22px;width:100%;background:linear-gradient(transparent,rgba(61,33,64,.85))}.cat h3{font-size:1.6rem}.cat p{margin:4px 0 0;font-size:.95rem;opacity:.95}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px;counter-reset:s}.steps div{counter-increment:s}.steps div:before{content:counter(s);display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--rose);color:#fff;font:600 1.4rem "Fraunces",serif;margin-bottom:12px}
+.steps h3{font-size:1.4rem}.steps p{margin:6px 0 0;color:var(--mut)}
+.visit{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;text-align:left;max-width:900px;margin:0 auto 30px}.visit h3{color:var(--blush);margin-bottom:4px}.visit p{margin:0;opacity:.9}
+@media(max-width:800px){nav a:not(.btn){display:none}}
+ 
