@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"><title>Owner Dashboard — Blush &amp; Bloom</title><meta name="robots" content="noindex"></head><body>
+<section><div class="page" id="root"></div></section><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script><script src="js/config.js"></script><script src="js/app.js"></script>
+<script>layout("admin.html");const R=document.getElementById("root");
+async function start(){if(await API.isAdmin())dash();else loginView()}
+function loginView(){R.innerHTML='<h1>Owner login</h1><div class="panel" style="max-width:420px">'+(live?'<label for="em">Email</label><input id="em" type="email">':'<p class="note">Demo dashboard. Password: '+esc(C.demoAdminPassword)+'.</p>')+'<label for="pw">Password</label><input id="pw" type="password"><p class="note" id="le" role="alert" style="color:#b3314f"></p><button class="btn" id="lb">Log in</button></div>';
+ document.getElementById("lb").onclick=async()=>{const ok=await API.login(live?document.getElementById("em").value:"",document.getElementById("pw").value);ok?dash():document.getElementById("le").textContent="Wrong email or password."}}
+async function dash(tab="svc"){R.innerHTML='<h1>Dashboard</h1><div class="tabs"><button class="btn'+(tab==="svc"?"":" ghost")+'" id="t1">Services</button><button class="btn'+(tab==="bk"?"":" ghost")+'" id="t2">Bookings</button><button class="btn ghost" id="t3">Log out</button></div><div id="body"></div>';
+ t1.onclick=()=>dash("svc");t2.onclick=()=>dash("bk");t3.onclick=async()=>{await API.logout();loginView()};
+ tab==="svc"?svcView():bkView()}
+async function bkView(){const l=await API.bookings();body.innerHTML='<div class="panel" style="overflow:auto"><table><tr><th>When</th><th>Client</th><th>Services</th><th>Total</th></tr>'+(l.length?l.map(b=>'<tr><td>'+esc(b.date)+'<br>'+esc(String(b.time).slice(0,5))+'</td><td>'+esc(b.name)+'<br>'+esc(b.phone)+'<br>'+esc(b.email)+(b.notes?'<br><i>'+esc(b.notes)+'</i>':'')+'</td><td>'+esc((b.services||[]).join(", "))+'</td><td>'+money(b.total)+'</td></tr>').join(""):'<tr><td colspan="4">No bookings yet.</td></tr>')+'</table></div>'}
+async function svcView(){const l=await API.services(true);
+ body.innerHTML='<div class="panel"><h3 id="ft">Add a service</h3><input type="hidden" id="id"><div class="two"><div><label for="a">Name</label><input id="a"></div><div><label for="im">Image path or URL</label><input id="im" placeholder="images/haircut.jpg"></div></div>'+
+ '<label for="d">Description</label><input id="d"><div class="two"><div><label for="pr">Price</label><input id="pr" type="number" min="0"></div><div><label for="sp">Sale price (leave empty for none)</label><input id="sp" type="number" min="0"></div></div>'+
+ '<label for="du">Duration (minutes)</label><input id="du" type="number" min="5" value="60"><div class="row2"><label class="chk"><input type="checkbox" id="po">Popular</label><label class="chk"><input type="checkbox" id="ac" checked>Shown on site</label></div>'+
+ '<p class="note" id="se" role="alert" style="color:#b3314f"></p><div class="row2"><button class="btn" id="sv">Save service</button><button class="btn ghost" id="cl">Clear</button></div></div>'+
+ '<div class="panel" style="overflow:auto"><table><tr><th>Service</th><th>Price</th><th>Flags</th><th></th></tr>'+l.map(s=>'<tr><td>'+esc(s.name)+'</td><td>'+priceHTML(s)+'</td><td>'+(s.popular?"Popular ":"")+(s.active?"":"Hidden")+'</td><td class="row2"><button class="btn sm" data-e="'+s.id+'">Edit</button><button class="btn sm danger" data-x="'+s.id+'">Delete</button></td></tr>').join("")+'</table></div>';
+ const f=s=>{id.value=s.id||"";a.value=s.name||"";im.value=s.image_url||"";d.value=s.description||"";pr.value=s.price??"";sp.value=s.sale_price??"";du.value=s.duration||60;po.checked=!!s.popular;ac.checked=s.active!==false;ft.textContent=s.id?"Edit service":"Add a service";scrollTo({top:0,behavior:"smooth"})};
+ cl.onclick=()=>f({});
+ body.onclick=async e=>{const b=e.target.closest("button");if(!b)return;if(b.dataset.e)f(l.find(s=>s.id==b.dataset.e));if(b.dataset.x&&confirm("Delete this service?")){await API.deleteService(b.dataset.x);svcView()}};
+ sv.onclick=async()=>{if(!a.value.trim()||pr.value==="")return se.textContent="Name and price are required.";
+  const s={name:a.value.trim(),image_url:im.value.trim(),description:d.value.trim(),price:+pr.value,sale_price:sp.value===""?null:+sp.value,duration:+du.value||60,popular:po.checked,active:ac.checked};if(id.value)s.id=+id.value;
+  try{await API.saveService(s);svcView()}catch(x){se.textContent="Could not save. Check your Supabase login and policies."}}}
+start();</script></body></html>
