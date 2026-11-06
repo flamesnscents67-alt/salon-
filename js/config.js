@@ -8,7 +8,7 @@ window.SALON_CONFIG = {
   currency: "Rs",
   openHour: 10, closeHour: 19,          // last slot starts at 7pm
   closedDays: [0],                      // 0 = Sunday
-  showcase: true,                       // true = always use built-in demo data (for social media demos). Set false for a real client.
+  showcase: false,                       // true = always use built-in demo data (for social media demos). Set false for a real client.
   SUPABASE_URL: "YOUR_SUPABASE_URL",
   SUPABASE_ANON_KEY: "YOUR_SUPABASE_ANON_KEY",
   demoAdminPassword: "bloom123"         // demo mode only
