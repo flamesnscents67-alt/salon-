@@ -3,26 +3,36 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css"><title>Blush &amp; Bloom — Hair, Nails &amp; Beauty Salon</title>
 <meta name="description" content="Haircuts, colour, nails, facials and bridal makeup. Book your appointment online in a minute."></head><body>
-<div class="offer">This week: Hair Colour &amp; Gloss and Spa Pedicure are on sale. <a href="services.html">See prices</a></div>
+<div class="offer">Sale this week on selected treatments. <a href="services.html">See prices</a></div>
 <main>
 <div class="hero"><div><h1>Pretty hair, <em>pink</em> nails, zero stress.</h1>
 <p>Pick your treats, pick a time, and we will have the tea and the mirror ready.</p>
 <div class="row"><a class="btn" href="book.html">Book an appointment</a><a class="btn ghost" href="services.html">See services</a></div>
 <div class="stats"><div><b>4.9</b>average rating</div><div><b>2,300+</b>happy clients</div><div><b>12</b>years of glam</div></div></div>
 <div class="arch"><img id="hero" src="" alt="Woman smiling and giving a peace sign in the salon" onerror="this.remove()"></div></div>
-<section><div class="head"><h2>Our most-loved treats</h2><a href="services.html">All services</a></div><div class="grid" id="popular"></div></section>
-<section><div class="head"><h2>Fresh from the chair</h2></div><div class="gal" id="gal"></div></section>
+<section><div class="head"><h2>Everything you need, in one pink studio</h2><a href="services.html">Full price list</a></div><div class="cats" id="cats"></div></section>
+<section style="background:#fff"><div class="head"><h2>Popular right now</h2><a href="book.html">Book yours</a></div><div class="grid" id="popular"></div></section>
+<section><div class="head"><h2>How it works</h2></div><div class="steps">
+<div><h3>Choose your treats</h3><p>Pick one service or mix a few into a single visit.</p></div>
+<div><h3>Pick a day and time</h3><p>See open slots live. We are closed on Sundays.</p></div>
+<div><h3>Show up and glow</h3><p>Check or cancel anytime under My bookings.</p></div></div></section>
+<section style="background:#fff"><div class="head"><h2>Fresh from the chair</h2></div><div class="gal" id="gal"></div></section>
 <section class="why"><div><h3>Stylists who listen</h3><p>Show us your saved pictures. We will tell you honestly what suits you.</p></div>
-<div><h3>Book in a minute</h3><p>Choose one service or five, then pick a day and a time.</p></div>
+<div><h3>Book in a minute</h3><p>No calls, no waiting. Pick a time that suits you.</p></div>
 <div><h3>Gentle on your hair</h3><p>Salon-grade, nourishing products on every head.</p></div></section>
 <section><div class="head"><h2>Sweet words from our clients</h2></div><div class="rev">
 <blockquote><span class="star">★★★★★</span><p>Best balayage I have ever had. Soft, shiny and exactly what I showed them.</p><cite>Sana R.</cite></blockquote>
 <blockquote><span class="star">★★★★★</span><p>Booked online at midnight, walked in the next day, out in under an hour. My gel nails are still perfect.</p><cite>Hira M.</cite></blockquote>
 <blockquote><span class="star">★★★★★</span><p>They did my whole bridal look and I felt like myself, just glowing. Thank you!</p><cite>Maryam S.</cite></blockquote></div></section>
-<section class="cta"><h2>Ready for a little glow-up?</h2><p id="addr"></p><a class="btn" href="book.html">Reserve your seat</a></section>
+<section class="cta"><h2>Ready for a little glow-up?</h2><p>Come say hi, or book ahead and skip the wait.</p>
+<div class="visit"><div><h3>Find us</h3><p id="addr"></p></div><div><h3>Opening hours</h3><p id="hrs"></p></div><div><h3>Call us</h3><p id="ph"></p></div></div>
+<a class="btn" href="book.html">Reserve your seat</a></section>
 </main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script><script src="js/config.js"></script><script src="js/app.js"></script>
-<script>layout("index.html");document.getElementById("hero").src=img("hero").replace("w=900","w=1000");
-const G=["1633681926022-84c23e8cb2d6","1754799670410-b282791342c3","1643684391140-c5056cfd3436","1581182815808-b6eb627a8798","1604654894610-df63bc536371","1552693673-1bf958298935","1781450090585-1a511b7066d9","1571290274554-6a2eaa771e5f"];
-document.getElementById("gal").innerHTML=G.map(i=>'<figure><img loading="lazy" alt="Salon photo" src="https://images.unsplash.com/photo-'+i+'?auto=format&fit=crop&w=500&q=70" onerror="this.closest(\'figure\').remove()"></figure>').join("");
-document.getElementById("addr").textContent=C.address;
-API.services().then(l=>{const p=l.filter(s=>s.popular).slice(0,4);document.getElementById("popular").innerHTML=(p.length?p:l.slice(0,4)).map(s=>cardHTML(s)).join("")});</script></body></html>
+<script>layout("index.html");const q=id=>document.getElementById(id);q("hero").src=img("hero").replace("w=900","w=1000");
+q("addr").textContent=C.address;q("hrs").textContent=C.hours;q("ph").textContent=C.phone;
+const CAT=[["Hair","Cuts, colour, blow-dries and treatments for every length.","haircut"],["Nails","Gel, nail art and spa pedicures with a pretty finish.","manicure"],["Skin & spa","Facials, skin rituals and soothing face massages.","facial"],["Makeup & bridal","Party glam, lashes and full bridal looks.","bridal"]];
+q("cats").innerHTML=CAT.map(function(c){return '<a class="cat" href="services.html"><img loading="lazy" alt="'+c[0]+'" src="'+img(c[2])+'" onerror="this.remove()"><div><h3>'+c[0]+'</h3><p>'+c[1]+'</p></div></a>'}).join("");
+const G=["1633681926022-84c23e8cb2d6","1754799670410-b282791342c3","1781450090585-1a511b7066d9","1571290274554-6a2eaa771e5f","1774660810725-fb04e002003d","1570172619644-dfd03ed5d881","1658492055212-e1acbccfca5a","1595475884562-073c30d45670"];
+q("gal").innerHTML=G.map(function(i){return '<figure><img loading="lazy" alt="Salon photo" src="https://images.unsplash.com/photo-'+i+'?auto=format&fit=crop&w=500&q=70" onerror="this.closest(\'figure\').remove()"></figure>'}).join("");
+API.services().then(function(l){const p=l.filter(function(s){return s.popular}).slice(0,4);q("popular").innerHTML=(p.length?p:l.slice(0,4)).map(function(s){return cardHTML(s)}).join("")});</script></body></html>
+ 
