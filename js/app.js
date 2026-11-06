@@ -2,17 +2,22 @@ const C = window.SALON_CONFIG;
 const live = !C.showcase && C.SUPABASE_URL && !C.SUPABASE_URL.includes("YOUR_") && window.supabase;
 const sb = live ? supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY) : null;
 const LS = (k, v) => v === undefined ? JSON.parse(localStorage.getItem(k) || "null") : localStorage.setItem(k, JSON.stringify(v));
-const PHOTOS = {"haircut": "1634449571010-02389ed0f9b0", "colour": "1595475884562-073c30d45670", "blowdry": "1580618672591-eb180b1a973f", "manicure": "1519014816548-bf5fe059798b", "pedicure": "1658492055212-e1acbccfca5a", "facial": "1570172619644-dfd03ed5d881", "makeup": "1589710751893-f9a6770ad71b", "bridal": "1774660810725-fb04e002003d", "hero": "1761839256840-7780a45b85dc"}; // free Unsplash photos (Unsplash License)
+const PHOTOS = {"haircut": "1634449571010-02389ed0f9b0", "colour": "1595475884562-073c30d45670", "blowdry": "1580618672591-eb180b1a973f", "manicure": "1519014816548-bf5fe059798b", "pedicure": "1658492055212-e1acbccfca5a", "facial": "1570172619644-dfd03ed5d881", "lash": "1589710751893-f9a6770ad71b", "bridal": "1774660810725-fb04e002003d", "hero": "1761839256840-7780a45b85dc", "party": "1581182815808-b6eb627a8798", "nailart": "1604654894610-df63bc536371", "massage": "1643684391140-c5056cfd3436", "skincare": "1552693673-1bf958298935"}; // free Unsplash photos (Unsplash License)
 const img = n => `https://images.unsplash.com/photo-${PHOTOS[n]}?auto=format&fit=crop&w=900&q=70`;
+const S = (id, name, description, price, sale_price, duration, popular, p) => ({id, name, description, price, sale_price, duration, popular, active: true, image_url: img(p)});
 const SEED = [
-  {id:1,name:"Signature Haircut & Style",description:"Consultation, wash, precision cut and a bouncy blow-dry.",price:2500,sale_price:null,duration:60,popular:true,active:true,image_url:img("haircut")},
-  {id:2,name:"Hair Colour & Gloss",description:"Soft balayage, all-over colour or a shine-boosting gloss.",price:7500,sale_price:6500,duration:150,popular:true,active:true,image_url:img("colour")},
-  {id:3,name:"Blow-Dry & Curls",description:"Silky straight, beachy waves or glam curls for any day.",price:1800,sale_price:null,duration:45,popular:false,active:true,image_url:img("blowdry")},
-  {id:4,name:"Gel Manicure",description:"Shape, cuticle care and long-wear gel in your shade.",price:2200,sale_price:null,duration:50,popular:true,active:true,image_url:img("manicure")},
-  {id:5,name:"Spa Pedicure",description:"Warm soak, scrub, massage and polish for happy feet.",price:2800,sale_price:2400,duration:60,popular:false,active:true,image_url:img("pedicure")},
-  {id:6,name:"Glow Facial",description:"Deep cleanse, exfoliation and a hydrating mask.",price:4000,sale_price:null,duration:60,popular:false,active:true,image_url:img("facial")},
-  {id:7,name:"Party Makeup",description:"Soft glam or full glam, lashes included.",price:6000,sale_price:null,duration:75,popular:false,active:true,image_url:img("makeup")},
-  {id:8,name:"Bridal Package",description:"Makeup, hair styling and draping for your big day.",price:35000,sale_price:null,duration:240,popular:false,active:true,image_url:img("bridal")}
+  S(1,"Signature Haircut & Style","Consultation, wash, precision cut and a bouncy blow-dry.",2500,null,60,true,"haircut"),
+  S(2,"Hair Colour & Gloss","Soft balayage, all-over colour or a shine-boosting gloss.",7500,6500,150,true,"colour"),
+  S(3,"Blow-Dry & Curls","Silky straight, beachy waves or glam curls for any day.",1800,null,45,false,"blowdry"),
+  S(4,"Gel Manicure","Shape, cuticle care and long-wear gel in your shade.",2200,null,50,true,"manicure"),
+  S(5,"Nail Art Design","Hand-painted designs, chrome, glitter and tiny charms.",3200,null,75,false,"nailart"),
+  S(6,"Spa Pedicure","Warm soak, scrub, massage and polish for happy feet.",2800,2400,60,false,"pedicure"),
+  S(7,"Glow Facial","Deep cleanse, exfoliation and a hydrating mask.",4000,null,60,true,"facial"),
+  S(8,"Skin Care Ritual","A tailored routine with serum, mask and SPF finish.",4800,null,70,false,"skincare"),
+  S(9,"Relaxing Face Massage","Lymphatic massage to release tension and brighten skin.",2000,null,30,false,"massage"),
+  S(10,"Lash Extensions","Classic or volume lashes for a wide-awake look.",5500,null,90,false,"lash"),
+  S(11,"Party Makeup","Soft glam or full glam, lashes included.",6000,null,75,false,"party"),
+  S(12,"Bridal Package","Makeup, hair styling and draping for your big day.",35000,null,240,false,"bridal")
 ];
 function seedDemo() {
   if (live || LS("seeded2")) return;
@@ -31,21 +36,21 @@ function activity() {
 const eff = s => s.sale_price && +s.sale_price < +s.price ? +s.sale_price : +s.price;
 const money = n => `${C.currency} ${Number(n).toLocaleString()}`;
 const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-
+ 
 const API = {
   async services(all) {
     if (live) { let q = sb.from("services").select("*").order("id"); if (!all) q = q.eq("active", true); const {data} = await q; return data || []; }
-    let s = LS("services"); if (!s) { s = SEED; LS("services", s); } return all ? s : s.filter(x => x.active);
+    let s = LS("services2"); if (!s) { s = SEED; LS("services2", s); } return all ? s : s.filter(x => x.active);
   },
   async saveService(s) {
     if (live) { const {error} = s.id ? await sb.from("services").update(s).eq("id", s.id) : await sb.from("services").insert(s); if (error) throw error; return; }
     const list = await API.services(true);
     if (s.id) Object.assign(list.find(x => x.id == s.id), s); else list.push({...s, id: Date.now()});
-    LS("services", list);
+    LS("services2", list);
   },
   async deleteService(id) {
     if (live) { await sb.from("services").delete().eq("id", id); return; }
-    LS("services", (await API.services(true)).filter(x => x.id != id));
+    LS("services2", (await API.services(true)).filter(x => x.id != id));
   },
   async taken(date) {
     if (live) { const {data} = await sb.rpc("taken_slots", {d: date}); return (data || []).map(t => String(t).slice(0, 5)); }
@@ -61,6 +66,15 @@ const API = {
     if (live) { const {data} = await sb.from("bookings").select("*").order("date", {ascending: false}); return data || []; }
     return LS("bookings") || [];
   },
+  async myBookings(email, phone) {
+    const d = s => String(s).replace(/\D/g, "");
+    if (live) { const {data} = await sb.rpc("my_bookings", {p_email: email, p_phone: phone}); return data || []; }
+    return (LS("bookings") || []).filter(b => b.email.toLowerCase() === email.trim().toLowerCase() && d(b.phone) === d(phone));
+  },
+  async cancel(id, email, phone) {
+    if (live) { await sb.rpc("cancel_booking", {p_id: id, p_email: email, p_phone: phone}); return; }
+    LS("bookings", (LS("bookings") || []).filter(b => b.id != id));
+  },
   async login(email, pw) {
     if (live) { const {error} = await sb.auth.signInWithPassword({email, password: pw}); return !error; }
     if (pw === C.demoAdminPassword) { sessionStorage.setItem("adm", "1"); return true; } return false;
@@ -68,7 +82,12 @@ const API = {
   async isAdmin() { if (live) { const {data} = await sb.auth.getSession(); return !!data.session; } return sessionStorage.getItem("adm") === "1"; },
   async logout() { if (live) await sb.auth.signOut(); sessionStorage.removeItem("adm"); }
 };
-
+ 
+async function uploadImage(file) {
+  const blob = await new Promise(res => { const im = new Image(); im.onload = () => { const k = Math.min(1, 900 / im.width), c = document.createElement("canvas"); c.width = im.width * k; c.height = im.height * k; c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); c.toBlob(res, "image/jpeg", .78); }; im.src = URL.createObjectURL(file); });
+  if (live) { const p = Date.now() + ".jpg"; const {error} = await sb.storage.from("service-images").upload(p, blob, {contentType: "image/jpeg"}); if (error) throw error; return sb.storage.from("service-images").getPublicUrl(p).data.publicUrl; }
+  return new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(blob); });
+}
 function priceHTML(s) { return s.sale_price && +s.sale_price < +s.price ? `<span class="was">${money(s.price)}</span> <b>${money(s.sale_price)}</b>` : `<b>${money(s.price)}</b>`; }
 function cardHTML(s, pick) {
   const sale = s.sale_price && +s.sale_price < +s.price;
@@ -79,10 +98,11 @@ function cardHTML(s, pick) {
       <div class="meta"><span>${priceHTML(s)}</span><span class="dur">${s.duration} min</span></div></div></article>`;
 }
 function layout(active) {
-  const links = [["index.html","Home"],["services.html","Services"],["book.html","Book"]];
+  const links = [["index.html","Home"],["services.html","Services"],["book.html","Book"],["mybookings.html","My bookings"]];
   document.body.insertAdjacentHTML("afterbegin", `<header class="nav"><a class="logo" href="index.html">${esc(C.name)}</a>
     <nav>${links.map(l => `<a href="${l[0]}" class="${l[0] === active ? "on" : ""}">${l[1]}</a>`).join("")}<a class="btn sm" href="book.html">Book now</a></nav></header>`);
   document.body.insertAdjacentHTML("beforeend", `<footer><div><b>${esc(C.name)}</b><p>${esc(C.tagline)}</p></div>
     <div><p>${esc(C.address)}</p><p>${esc(C.phone)} · ${esc(C.hours)}</p></div><div><a href="admin.html">Owner login</a></div></footer>`);
   if (!live) activity();
 }
+ 
